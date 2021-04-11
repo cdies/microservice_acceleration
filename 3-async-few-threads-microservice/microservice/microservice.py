@@ -8,6 +8,7 @@ api = fastapi.FastAPI()
 async def weather(city: str):
     url = f'https://pogoda.mail.ru/prognoz/{city}/'
 
+    # asynchronous implementation
     async with httpx.AsyncClient() as client:
         response = await client.get(url)
         response.raise_for_status()
