@@ -4,8 +4,8 @@ services:
     microservice:
         build:
             context: ./microservice
-        image: microservice
-        container_name: microservice
+        image: simple-microservice
+        container_name: simple-microservice
         restart: unless-stopped
         ports:
             - "8000:8000"

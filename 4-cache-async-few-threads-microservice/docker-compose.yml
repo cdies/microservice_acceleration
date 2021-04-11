@@ -4,8 +4,8 @@ services:
     microservice:
         build:
             context: ./microservice
-        image: microservice
-        container_name: microservice
+        image: cache-async-few-threads-microservice
+        container_name: cache-async-few-threads-microservice
         restart: unless-stopped
         ports:
             - "8000:8000"
