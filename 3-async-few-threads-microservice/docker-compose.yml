@@ -10,4 +10,4 @@ services:
         ports:
             - "8000:8000"
         # work in few threads
-        command: gunicorn --workers=3 -b 0.0.0.0:8000 -k uvicorn.workers.UvicornWorker microservice:api
+        command: gunicorn --workers=3 -b 0.0.0.0:8000 -k uvicorn.workers.UvicornWorker async-few-threads-microservice:api

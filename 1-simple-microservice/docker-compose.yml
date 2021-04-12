@@ -9,4 +9,4 @@ services:
         restart: unless-stopped
         ports:
             - "8000:8000"
-        command: gunicorn -b 0.0.0.0:8000 -k uvicorn.workers.UvicornWorker microservice:api
+        command: gunicorn -b 0.0.0.0:8000 -k uvicorn.workers.UvicornWorker simple-microservice:api
