@@ -4,4 +4,4 @@ RUN python -m pip install fastapi httpx scrapy gunicorn uvicorn uvloop httptools
 
 WORKDIR /app
 
-ADD microservice.py microservice.py
+ADD few-threads-microservice.py few-threads-microservice.py
