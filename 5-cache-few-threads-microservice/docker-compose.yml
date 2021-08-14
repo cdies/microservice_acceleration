@@ -1,0 +1,24 @@
+version: '3.7'
+
+services:
+    microservice:
+        build:
+            context: ./microservice
+        image: cache-few-threads-microservice
+        container_name: cache-few-threads-microservice
+        restart: unless-stopped
+        ports:
+            - "8000:8000"
+        # work in few threads
+        command: gunicorn --workers=3 -b 0.0.0.0:8000 -k uvicorn.workers.UvicornWorker cache-few-threads-microservice:api
+
+    redis:
+        image: redis
+        container_name: cache-few-threads-microservice-redis
+        restart: unless-stopped
+        volumes:
+            - ./redis/data:/data
+            - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+        expose:
+            - 6379
+        command: redis-server /usr/local/etc/redis/redis.conf
