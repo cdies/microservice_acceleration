@@ -7,7 +7,7 @@ api = fastapi.FastAPI()
 
 @api.get('/api/weather/{city}')
 async def weather(city: str):
-    redis = await aioredis.create_redis(address=('redis', 6379))
+    redis = await aioredis.from_url('redis://@redis:6379/0')
 
     # get cache from memory
     cache = await redis.get(city)
@@ -27,7 +27,7 @@ async def weather(city: str):
     t = selector.xpath('//div[@class="information__content__temperature"]/text()').getall()[1].strip()
 
     # save cache in memory for 1 hour
-    await redis.set(city, t, expire=3600)
+    await redis.set(city, t, ex=3600)
 
     return {'city':city, 'temperature':t, 'source':'pogoda.mail.ru'}
 
