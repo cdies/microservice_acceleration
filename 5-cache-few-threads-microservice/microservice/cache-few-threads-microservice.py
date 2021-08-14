@@ -1,16 +1,15 @@
 import fastapi
 import httpx
 from scrapy.selector import Selector
-import aioredis
+import redis
 
 api = fastapi.FastAPI()
+redis = redis.Redis(host='redis', port=6379, db=0)
 
 @api.get('/api/weather/{city}')
-async def weather(city: str):
-    redis = await aioredis.from_url('redis://@redis:6379/0')
-
+def weather(city: str) -> dict:
     # get cache from memory
-    cache = await redis.get(city)
+    cache = redis.get(city)
 
     # check value from cache, if exists return it
     if cache is not None:
@@ -18,17 +17,14 @@ async def weather(city: str):
 
     url = f'https://pogoda.mail.ru/prognoz/{city}/'
 
-    # asynchronous implementation
-    async with httpx.AsyncClient() as client:
-        response = await client.get(url)
+    with httpx.Client() as client:
+        response = client.get(url)
         response.raise_for_status()
 
     selector = Selector(text=response.text)
     t = selector.xpath('//div[@class="information__content__temperature"]/text()').getall()[1].strip()
 
     # save cache in memory for 1 hour
-    await redis.set(city, t, ex=3600)
+    redis.set(city, t, ex=3600)
 
     return {'city':city, 'temperature':t, 'source':'pogoda.mail.ru'}
-
-
