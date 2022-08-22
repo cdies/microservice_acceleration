@@ -4,10 +4,23 @@ from scrapy.selector import Selector
 import aioredis
 
 api = fastapi.FastAPI()
+redis = None
+
+@api.on_event('startup')
+async def startup_event():
+    global redis
+    redis = await aioredis.create_redis(address=('redis', 6379))
+
+
+@api.on_event('shutdown')
+async def shutdown_event():
+    redis.close()
+    await redis.wait_closed()
+
 
 @api.get('/api/weather/{city}')
 async def weather(city: str):
-    redis = await aioredis.create_redis(address=('redis', 6379))
+    # redis = await aioredis.create_redis(address=('redis', 6379))
 
     # get cache from memory
     cache = await redis.get(city)
