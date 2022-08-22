@@ -13,7 +13,7 @@ services:
         command: gunicorn --workers=3 -b 0.0.0.0:8000 -k uvicorn.workers.UvicornWorker cache-async-few-threads-microservice:api
 
     redis:
-        image: redis
+        image: redis:6
         container_name: redis
         restart: unless-stopped
         volumes:
